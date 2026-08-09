@@ -4,11 +4,14 @@ from fastapi import FastAPI, HTTPException
 
 app = FastAPI(title="YouTube Music Bot API")
 
-YOUTUBE_API_KEY = os.getenv("AIzaSyDDMCMrCyYAKY8A5ChCx8vay9W_AyAM2ek")
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
 @app.get("/")
 def home():
-    return {"status": "online", "service": "YouTube API"}
+    return {
+        "status": "online",
+        "service": "YouTube API"
+    }
 
 @app.get("/search")
 def search_youtube(q: str, limit: int = 5):
@@ -19,17 +22,17 @@ def search_youtube(q: str, limit: int = 5):
             detail="YOUTUBE_API_KEY is not configured"
         )
 
-    url = "https://www.googleapis.com/youtube/v3/search"
-
-    params = {
-        "part": "snippet",
-        "q": q,
-        "type": "video",
-        "maxResults": min(limit, 50),
-        "key": YOUTUBE_API_KEY
-    }
-
-    response = requests.get(url, params=params)
+    response = requests.get(
+        "https://www.googleapis.com/youtube/v3/search",
+        params={
+            "part": "snippet",
+            "q": q,
+            "type": "video",
+            "maxResults": min(limit, 50),
+            "key": YOUTUBE_API_KEY
+        },
+        timeout=20
+    )
 
     if response.status_code != 200:
         raise HTTPException(
