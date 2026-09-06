@@ -1,4 +1,4 @@
-# 🎶 Artistbots Music Api
+# 🎶 Yuvi Music Api
 
 A lightweight Flask API to **search YouTube** and **download audio/video** from YouTube (and Spotify links, resolved via search) — powered by [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) and `ffmpeg`. Built for easy deployment on Render, Railway, or Replit.
 
@@ -127,5 +127,5 @@ No license specified — add one (e.g. MIT) if you plan to open-source this.
 
 ## 💬 Credit & Support
 
-Built and maintained by **Artistbots**.
-For support, questions, or feedback, reach out on Telegram: **[t.me/Artistbots](https://t.me/Artistbots)**
+Built and maintained by **Yuvi**.
+For support, questions, or feedback, reach out on Telegram: **[t.me/yuvi_botes](https://t.me/yuvi_botes)**
