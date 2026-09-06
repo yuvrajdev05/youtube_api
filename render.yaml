@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: youtube-music-api
+    env: docker
+    plan: free # Change this to starter if you need more resources
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 10000

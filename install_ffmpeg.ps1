@@ -1,0 +1,5 @@
+Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip" -OutFile "ffmpeg.zip"
+Expand-Archive -Path "ffmpeg.zip" -DestinationPath "."
+Move-Item "ffmpeg-master-latest-win64-gpl\bin\*.exe" "."
+Remove-Item -Recurse -Force "ffmpeg-master-latest-win64-gpl"
+Remove-Item -Force "ffmpeg.zip"
