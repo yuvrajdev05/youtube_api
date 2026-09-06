@@ -397,21 +397,310 @@ def download_endpoint():
 @app.route('/')
 def home():
     return """
-    <h1>🎶 YouTube Downloader API</h1>
-    <p>Use this API to search and download audio/video from YouTube videos.</p>
-    <p><strong>Endpoints:</strong></p>
-    <ul>
-        <li><strong>/search</strong>: Search for a video by title. Query parameter: <code>?title=</code></li>
-        <li><strong>/download</strong>: Download audio or video. Query parameters: <code>?url=</code> (video ID or full URL), <code>&type=audio|video</code>, <code>&api_key=</code></li>
-    </ul>
-    <p>Examples:</p>
-    <ul>
-        <li>Search: <code>/search?title=Your%20Favorite%20Song</code></li>
-        <li>Download audio: <code>/download?url=dQw4w9WgXcQ&type=audio&api_key=yuvibotes</code></li>
-        <li>Download video (quality): <code>/download?url=dQw4w9WgXcQ&amp;type=video&amp;quality=720&amp;api_key=YOUR_API_KEY</code></li>
-        <li>Download by Title (audio): <code>/download?title=Your%20Favorite%20Song&type=audio&api_key=yuvibotes</code></li>
-        <li>Download from Spotify: <code>/download?url=https://open.spotify.com/track/...&type=audio&api_key=yuvibotes</code></li>
-    </ul>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>YouTube Downloader API</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+            
+            :root {
+                --bg-color: #0f172a;
+                --card-bg: rgba(30, 41, 59, 0.7);
+                --primary: #3b82f6;
+                --primary-hover: #2563eb;
+                --accent: #ec4899;
+                --text-main: #f8fafc;
+                --text-muted: #cbd5e1;
+            }
+
+            body {
+                font-family: 'Outfit', sans-serif;
+                background: var(--bg-color);
+                background-image: 
+                    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+                    radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15), transparent 25%);
+                color: var(--text-main);
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow-x: hidden;
+            }
+
+            .container {
+                max-width: 800px;
+                width: 90%;
+                margin: 2rem auto;
+                background: var(--card-bg);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 24px;
+                padding: 3rem;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            @keyframes slideUp {
+                0% { transform: translateY(40px); opacity: 0; }
+                100% { transform: translateY(0); opacity: 1; }
+            }
+
+            h1 {
+                font-size: 3rem;
+                font-weight: 800;
+                margin-bottom: 1rem;
+                background: linear-gradient(to right, #60a5fa, #f472b6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-align: center;
+            }
+
+            p.subtitle {
+                text-align: center;
+                color: var(--text-muted);
+                font-size: 1.1rem;
+                margin-bottom: 3rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin-top: 2rem;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .endpoint {
+                background: rgba(15, 23, 42, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .endpoint:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .badge {
+                background: var(--primary);
+                color: white;
+                padding: 0.3rem 0.8rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-right: 10px;
+            }
+
+            .badge.get { background: #10b981; }
+
+            code {
+                font-family: 'Fira Code', monospace;
+                background: rgba(0, 0, 0, 0.3);
+                padding: 0.2rem 0.5rem;
+                border-radius: 6px;
+                color: #93c5fd;
+                font-size: 0.95em;
+            }
+
+            .example-block {
+                margin-top: 1rem;
+            }
+
+            .example-item {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .example-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .example-label {
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+
+            .example-code {
+                background: #0f172a;
+                padding: 1rem;
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                overflow-x: auto;
+                color: #e2e8f0;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            /* Floating Telegram Button */
+            .telegram-fab {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: linear-gradient(135deg, #0088cc, #005f8e);
+                color: white;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                box-shadow: 0 10px 25px rgba(0, 136, 204, 0.4);
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                z-index: 1000;
+            }
+
+            .telegram-fab:hover {
+                transform: scale(1.1) translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0, 136, 204, 0.6);
+            }
+
+            .telegram-fab svg {
+                width: 30px;
+                height: 30px;
+                fill: currentColor;
+                transform: translateX(-1px) translateY(1px); /* optical alignment */
+            }
+
+            .telegram-tooltip {
+                position: absolute;
+                right: 80px;
+                background: white;
+                color: #0f172a;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
+
+            .telegram-tooltip::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                right: -6px;
+                transform: translateY(-50%);
+                border-width: 6px 0 6px 6px;
+                border-style: solid;
+                border-color: transparent transparent transparent white;
+            }
+
+            .telegram-fab:hover .telegram-tooltip {
+                opacity: 1;
+                visibility: visible;
+                right: 75px;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 2rem;
+                    width: 95%;
+                }
+                h1 { font-size: 2.2rem; }
+                .telegram-fab {
+                    bottom: 20px;
+                    right: 20px;
+                    width: 50px;
+                    height: 50px;
+                }
+                .telegram-fab svg { width: 24px; height: 24px; }
+                .telegram-tooltip { display: none; }
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <h1>🎵 YouTube Downloader API</h1>
+            <p class="subtitle">A lightning-fast REST API to search and extract high-quality audio & video from YouTube and Spotify.</p>
+
+            <h2>🚀 Available Endpoints</h2>
+
+            <div class="endpoint">
+                <h3><span class="badge get">GET</span> /search</h3>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Search for a video on YouTube by its title.</p>
+                <div style="margin-top: 1rem;">
+                    <strong>Parameters:</strong>
+                    <ul style="color: var(--text-muted); margin-top: 0.5rem; line-height: 1.6;">
+                        <li><code>title</code> (required): The search query.</li>
+                    </ul>
+                </div>
+                <div class="example-block">
+                    <div class="example-item">
+                        <span class="example-label">Example Request</span>
+                        <div class="example-code">/search?title=Your%20Favorite%20Song</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="badge get">GET</span> /download</h3>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Download processed audio or video directly.</p>
+                <div style="margin-top: 1rem;">
+                    <strong>Parameters:</strong>
+                    <ul style="color: var(--text-muted); margin-top: 0.5rem; line-height: 1.6;">
+                        <li><code>url</code>: Video ID, YouTube URL, or Spotify URL.</li>
+                        <li><code>title</code>: Search query (if <code>url</code> is omitted).</li>
+                        <li><code>type</code>: <code>audio</code> (default) or <code>video</code>.</li>
+                        <li><code>quality</code>: Max height in pixels (e.g., <code>720</code>) for video.</li>
+                        <li><code>api_key</code> (required): Your API access key.</li>
+                    </ul>
+                </div>
+                <div class="example-block">
+                    <div class="example-item">
+                        <span class="example-label">Download Audio by ID</span>
+                        <div class="example-code">/download?url=dQw4w9WgXcQ&amp;type=audio&amp;api_key=yuvibotes</div>
+                    </div>
+                    <div class="example-item">
+                        <span class="example-label">Download Video by ID (720p)</span>
+                        <div class="example-code">/download?url=dQw4w9WgXcQ&amp;type=video&amp;quality=720&amp;api_key=yuvibotes</div>
+                    </div>
+                    <div class="example-item">
+                        <span class="example-label">Download Audio by Search Title</span>
+                        <div class="example-code">/download?title=Your%20Favorite%20Song&amp;type=audio&amp;api_key=yuvibotes</div>
+                    </div>
+                    <div class="example-item">
+                        <span class="example-label">Download Audio from Spotify Link</span>
+                        <div class="example-code">/download?url=https://open.spotify.com/track/...&amp;type=audio&amp;api_key=yuvibotes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://t.me/yuvi_botes" target="_blank" class="telegram-fab" aria-label="Contact on Telegram">
+            <span class="telegram-tooltip">Chat with @yuvi_botes</span>
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.98 1.25-5.58 3.68-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.89.03-.25.38-.51 1.03-.78 4.04-1.76 6.74-2.92 8.09-3.48 3.85-1.6 4.64-1.88 5.17-1.89.11 0 .37.03.5.17.11.12.13.28.14.41-.01.07-.01.17-.02.21z"/>
+            </svg>
+        </a>
+
+    </body>
+    </html>
     """
 
 
