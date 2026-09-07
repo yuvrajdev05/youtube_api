@@ -9,6 +9,8 @@ import glob
 import shutil
 
 app = Flask(__name__)
+from flask_cors import CORS
+CORS(app)
 
 # Base directory using /tmp (Render free plan uses ephemeral storage)
 BASE_TEMP_DIR = "/tmp"
